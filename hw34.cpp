@@ -6,7 +6,6 @@
 #include <map>
 #include <set>
 #include <iostream>
-#include <vector>
 #include <time.h>
 #define InD -8
 #define Mis -4
@@ -57,6 +56,15 @@ int input(char* doc,char*a)//input data from a file
     }
     fclose(fp);
     return i;
+}
+
+void print(char*a, int length)
+{
+    for(int i=0;i<length;i++)
+    {
+        printf("%c ",a[i]);
+    }
+    printf("\n");
 }
 
 int score(char a, char b )
@@ -322,6 +330,13 @@ inline void output_len(char* a,char* b,int length_a, int length_b, char *a_ali,c
             }
 	    }
 	}
+	while(b_c<length_b)
+	{
+		a_ali[curr]='_';
+		b_ali[curr]=b[b_c];
+		b_c++;
+		curr++;
+	}
 }
 
 inline int a_cmp_b1(char* a,char b,int length_a)//assume Mismatch > InD
@@ -404,7 +419,7 @@ void multi_align0(char*a,char*b,char *c,int length_a,int length_b,int length_c,s
 	char b_ali[total_length];
 	output_len( a, b, length_a, length_b, a_ali,b_ali,pred);
 	char c_ali[total_length];
-	for(int i=0;i<total_length+1;i++)
+	for(int i=0;i<total_length;i++)
 		c_ali[i]='_';
     int mark=0;
     if(length_c==1)
@@ -510,47 +525,45 @@ int main()
 {
 	clock_t t;
 	t=clock();
-	char doc1[]="NM_000492.fasta";
+	char doc1[]="NM_178850.2.fasta";
+	char doc2[]="NM_001030004.fasta";
+	char doc3[]="XM_514664.fasta";
 	int length_a=cnt(doc1);
 	char *a;
-	a=(char*)malloc(length_a*sizeof(char));	
+	a=(char*)malloc(length_a*sizeof(char));
 	input( doc1,a);
 	printf("file1 open correctly! length is %d\n",length_a);
-	char doc2[]="NM_021050.fasta";
-	int length_b=cnt(doc2);	
+	int length_b=cnt(doc2);
 	char *b;
 	b=(char*)malloc(length_b*sizeof(char));
 	input( doc2,b);
 	printf("file2 open correctly! length is %d\n",length_b);
-	char doc3[]="NM_031506.fasta";
-	int length_c=cnt(doc3);	
+	int length_c=cnt(doc3);
 	char *c;
 	c=(char*)malloc(length_c*sizeof(char));
 	input( doc3,c);
 	printf("file3 open correctly! length is %d\n",length_c);
-    int a_offset=0;
-    int b_offset=0;
-    int c_offset=0;
-    string str_a,str_b,str_c;
-    int total_score=find_aligment3(a,b,c,length_a, length_b,length_c,a_offset, b_offset, c_offset, str_a, str_b, str_c);
-    printf("Total score is %d.\n",total_score);
-    cout<<"Length of alignment is "<<str_a.size()<<". "<<endl;
-    int perfect_match=0;
+	int a_offset=0;
+	int b_offset=0;
+	int c_offset=0;
+	string str_a,str_b,str_c;
+	int total_score=find_aligment3(a,b,c,length_a, length_b,length_c,a_offset, b_offset, c_offset, str_a, str_b, str_c);
+	printf("Total score is %d.\n",total_score);
+	cout<<"Lengths of alignment result sequence of a, b, c are "<<str_a.size()<<' '<<str_b.size()<<" and " <<str_c.size()<<". "<<endl;
+	int perfect_match=0;
 	for(int i=0;i<str_a.size();i++)
 	{
-		if(str_a[i]==str_b[i]&& str_b[i]==str_c[i])
-		{
-			perfect_match++;
-		}
+	        if(str_a[i]==str_b[i]&& str_b[i]==str_c[i])
+	        {
+	                perfect_match++;
+	        }
 	}
 	printf("Perfect match number is %d.\n",perfect_match);
 	cout<<str_a<<endl<<str_b<<endl<<str_c<<endl;
-
 	free(a);
 	free(b);
 	free(c);
 	t=clock()-t;
-	printf("It tooks me %d clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
-
-    return 0;
+	printf("It tooks me %d clicks (%lf seconds).\n",t,((float)t)/(float)CLOCKS_PER_SEC);  
+	return 0;
 }
