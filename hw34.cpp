@@ -523,9 +523,9 @@ int main()
 {
 	clock_t t;
 	t=clock();
-	char doc1[]="NM_178850.2.fasta";
-	char doc2[]="NM_001030004.fasta";
-	char doc3[]="XM_514664.fasta";
+	char doc1[]="NM_000492.fasta";
+	char doc2[]="NM_021050.fasta";
+	char doc3[]="NM_031506.fasta";
 	int length_a=cnt(doc1);
 	char *a;
 	a=(char*)malloc(length_a*sizeof(char));
