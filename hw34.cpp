@@ -252,7 +252,7 @@ void muti_ali(char* arr1, char* arr2,char *arr3, int length1,int length2,int len
             }
         }
 	}
-    for(int j=0;j<length2+1;j++)
+	for(int j=0;j<length2+1;j++)
     {
         for(int k=0;k<length3+1;k++)
         {
@@ -266,7 +266,6 @@ void muti_ali(char* arr1, char* arr2,char *arr3, int length1,int length2,int len
 			free(s_mx32[i][j]);
 		}
 	}
-	
 	for(int i=0;i<2;i++)
 	{
 		free(s_mx32[i]);
