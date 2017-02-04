@@ -1,6 +1,9 @@
 #include <string>
 #include <utility>
 #include <algorithm>
+#ifndef INT_MIN
+#define INT_MIN -2147483648
+#endif
 using namespace std;
 //This is the main data structure. String pointer is used to avoid unnecessary copy. 
 //The range is to indicate which interval is currently focus on

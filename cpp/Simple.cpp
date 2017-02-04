@@ -1,7 +1,5 @@
 //This is the short C++ version.
 #include "compare.h"
-#include <iostream>
-#include <time.h>
 #include <vector>
 //construct the 3 string intervals alignment when the length of interval c is no more than 1.
 void ali1(const StringInterval& A, const StringInterval& B, const StringInterval& C, string& aAli, string& bAli, string& cAli) {
@@ -160,7 +158,6 @@ int find_alignment3(const StringInterval& A, const StringInterval& B, const Stri
 		}
 		StringInterval B2(B, make_pair(B.getBegin() + mark_b, B.getEnd()));
 		StringInterval C2(C, make_pair(C.getBegin() + mark_c, C.getEnd()));
-		//find_alignment3(A2, B2, C2, str_a, str_b, str_c);
 		if (A2.size() >= B2.size() && A2.size() >= C2.size()) {
 			find_alignment3(A2, B2, C2, str_a, str_b, str_c);
 		} else if (B2.size() >= A2.size() && B2.size() >= C2.size()) {
@@ -179,44 +176,4 @@ int find_alignment3(const StringInterval& A, const StringInterval& B, const Stri
 		ali1(C, B, A, str_c, str_b, str_a);
 		return 0; 
 	}
-}
-
-int main() {
-	clock_t t;
-	t = clock();
-	char doc1[] = "NM_000558.fasta";
-	char doc2[] = "NM_008218.fasta";
-	char doc3[] = "NM_013096.fasta";
-	const string a = input(doc1); //"CATAAACCCTGGCGCGCTCGCGGCCCGGCACTCTTCTGGTCCCCACAGACTCAGAGAGAACCCACCATGG";//
-	StringInterval A(a);
-	cout << doc1 << " open correctly! length is " << a.size() << "." << endl;
-	const string b = input(doc2); //"GACACTTCTGATTCTGACAGACTCAGGAAGAAACCATGGTGCTCTCTGGGGAAGACAAAAGCAACATCAA";//
-	StringInterval B(b);
-	cout << doc2 << " open correctly! length is " << b.size() << "." << endl;
-	const string c = input(doc3); //"ACATTCTCCTTCTGATAGACTCAGGAAGCAATCATGGTGCTCTCTGCAGATGACAAAACCAACATCAAGA";//
-	StringInterval C(c);
-	cout << doc3 << " open correctly! length is " << c.size() << "." << endl;
-	string str_a, str_b, str_c;
-	int total_score;
-	if (A.size() >= B.size() && A.size() >= C.size()) {
-		total_score = find_alignment3(A, B, C, str_a, str_b, str_c);
-	} else if (B.size() >= A.size() && B.size() >= C.size()) {
-		total_score = find_alignment3(B, A, C, str_b, str_a, str_c);
-	} else {
-		total_score = find_alignment3(C, B, A, str_c, str_b, str_a);
-	}
-	cout << "Total score is " << total_score << "." << endl;
-	//cout << "Original lengths of sequences a, b, c are " << A.size() << ", " << B.size() << ", and " << C.size() << endl;
-	cout << "Lengths of alignment result sequences a, b, c are " << str_a.size() << ", " << str_b.size() << ", and " << str_c.size() << ". " << endl;
-	int perfect_match = 0;
-	for (int i = 0; i < str_a.size(); i++) {
-		if (str_a[i] == str_b[i] && str_b[i] == str_c[i]) {
-			perfect_match++;
-		}
-	}
-	cout << "Perfect match number is " << perfect_match << "." << endl;
-	cout << str_a << endl << str_b << endl << str_c << endl;
-	t = clock() - t;
-	cout << "It tooks me " << ((float)t) / (float)CLOCKS_PER_SEC << " seconds." << endl;
-	return 0;
 }
