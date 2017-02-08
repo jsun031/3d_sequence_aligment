@@ -24,7 +24,7 @@ int score3(char, char, char);
 pair<int, int> max(int*, int);
 
 //construct the 3 string intervals alignment when the length of interval c is no more than 1.
-void ali1(const StringInterval&, const StringInterval&, const StringInterval&, string&, string&, string&);
+int ali1(const StringInterval&, const StringInterval&, const StringInterval&, string&, string&, string&);
 
 //dynamically calculate the best alignment score for 3 string intervals
 vector<vector<int>> ali(const StringInterval&, const StringInterval&, const StringInterval&, bool);

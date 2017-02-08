@@ -2,10 +2,13 @@
 #include "compare.h"
 #include <vector>
 //construct the 3 string intervals alignment when the length of interval c is no more than 1.
-void ali1(const StringInterval& A, const StringInterval& B, const StringInterval& C, string& aAli, string& bAli, string& cAli) {
+int ali1(const StringInterval& A, const StringInterval& B, const StringInterval& C, string& aAli, string& bAli, string& cAli) {
 	//A.size() + 1 layers of B.size() * C.size() memory is enough. Each element has its score and its previous postion
 	vector<vector<vector<vector<int>>>> s_mx32(A.size() + 1, vector<vector<vector<int>>>(B.size() + 1, vector<vector<int>>(C.size() + 1, vector<int>(4, 0))));
 	for (int i = 0; i < A.size() + 1; i++) {
+		if (i > 0) {
+			s_mx32[1][0][0][0] = s_mx32[0][0][0][0] + 2 * InD;
+		}
 		for (int j = 0; j < B.size() + 1; j++) {
 			for (int k = 0; k < C.size() + 1; k++) {
 				if (i == 0 && j == 0 && k == 0) {
@@ -56,6 +59,7 @@ void ali1(const StringInterval& A, const StringInterval& B, const StringInterval
 	int i = A.size();
 	int j = B.size();
 	int k = C.size();
+	int ans = s_mx32[i][j][k][0];
 	string a, b, c;
 	while (i > 0 || j > 0 || k > 0) {
 		a += A.alignment(i, s_mx32[i][j][k][1]);
@@ -75,6 +79,7 @@ void ali1(const StringInterval& A, const StringInterval& B, const StringInterval
 	aAli += a;
 	bAli += b;
 	cAli += c;
+	return ans;
 }
 
 //dynamically calculate the possible alignment score for 3 string intervals
@@ -82,6 +87,9 @@ vector<vector<int>> ali(const StringInterval& A, const StringInterval& B, const 
 	//2 layers of B.size() * C.size() memory is enough
 	vector<vector<vector<int>>> s_mx32(2, vector<vector<int>>(B.size() + 1, vector<int>(C.size() + 1, 0)));
 	for (int i = 0; i < A.size() + 1; i++) {
+		if (i > 0) {
+			s_mx32[1][0][0] = s_mx32[0][0][0] + 2 * InD;
+		}
 		for (int j = 0; j < B.size() + 1; j++) {
 			for (int k = 0; k < C.size() + 1; k++) {
 				if (i == 0 && j == 0 && k == 0) {
@@ -118,62 +126,4 @@ vector<vector<int>> ali(const StringInterval& A, const StringInterval& B, const 
 		s_mx32[0] = s_mx32[1];
 	}
 	return s_mx32[1];
-}
-
-//find best alignment for 3 string intervals
-int find_alignment3(const StringInterval& A, const StringInterval& B, const StringInterval& C, string& str_a, string& str_b, string& str_c) {
-	if (A.size() > 1 && B.size() > 1 && C.size() > 1) {
-		//break the interval A from middle into 2 parts to find the best thresholds to break interval B and C. It needs log(A.size()) extra times iteration.
-		//This uses only B.size() * C.size() memory, while construct the best alignment directly needs A.size() * B.size() * C.size() memory
-		int breakpoint = (A.size() - 1) / 2 + A.getBegin();
-		StringInterval A1(A, make_pair(A.getBegin(), breakpoint));
-		vector<vector<int>> sp_mx = ali(A1, B, C, true);
-		StringInterval A2(A, make_pair(breakpoint + 1, A.getEnd()));
-		vector<vector<int>> sb_mx = ali(A2, B, C, false);
-		int mx = INT_MIN;
-		int tmp_sm = 0;
-		int mark_b = 0;
-		int mark_c = 0;
-		for (int i = 0; i < B.size() + 1; i++) {
-			for (int j = 0; j < C.size() + 1; j++) {
-				tmp_sm = sp_mx[i][j] + sb_mx[B.size() - i][C.size() - j];
-				if (mx < tmp_sm) {
-					mx = tmp_sm;
-					mark_b = i;
-					mark_c = j;
-				}
-			}
-		}
-		sp_mx.clear();
-		sb_mx.clear();
-		//break B and C according to optimal value and construct the alignment separately
-		StringInterval B1(B, make_pair(B.getBegin(), B.getBegin() + mark_b - 1));
-		StringInterval C1(C, make_pair(C.getBegin(), C.getBegin() + mark_c - 1));
-		if (A1.size() >= B1.size() && A1.size() >= C1.size()) {
-			find_alignment3(A1, B1, C1, str_a, str_b, str_c);
-		} else if (B1.size() >= A1.size() && B1.size() >= C1.size()) {
-			find_alignment3(B1, A1, C1, str_b, str_a, str_c);
-		} else {
-			find_alignment3(C1, B1, A1, str_c, str_b, str_a);
-		}
-		StringInterval B2(B, make_pair(B.getBegin() + mark_b, B.getEnd()));
-		StringInterval C2(C, make_pair(C.getBegin() + mark_c, C.getEnd()));
-		if (A2.size() >= B2.size() && A2.size() >= C2.size()) {
-			find_alignment3(A2, B2, C2, str_a, str_b, str_c);
-		} else if (B2.size() >= A2.size() && B2.size() >= C2.size()) {
-			find_alignment3(B2, A2, C2, str_b, str_a, str_c);
-		} else {
-			find_alignment3(C2, B2, A2, str_c, str_b, str_a);
-		}
-		return mx;
-	} else if (A.size() == 1 || A.size() == 0) {
-		ali1(A, B, C, str_a, str_b, str_c);
-		return 0;
-	} else if (B.size() == 1 || B.size() == 0) {
-		ali1(B, C, A, str_b, str_c, str_a);
-		return 0;
-	} else {
-		ali1(C, B, A, str_c, str_b, str_a);
-		return 0; 
-	}
 }
