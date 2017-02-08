@@ -1,5 +1,5 @@
 This is a 3 sequence alignment program. I try 2 versions: string-vector and char-int pointer.
-To compare 3 sequence, you need to store them in 3 separate files on the same directory with the program.
+To compare 3 sequences, you need to store them in 3 separate files on the same directory with the program.
 Open the directory. Find doc1, doc2, doc3 in the main program and name the 3 value with the 3 files names.
 
 For the string versions, I make it more objective oriented and depart the code into 4 files. StringInterval.h and StringInterval.cpp is the main data structure I use. compare.h and compare.cpp is the basic help function I write. Simple.cpp has 2 main alignment functions. One is the calculate the alignment score and the other is construct the alignment from beginning. 
